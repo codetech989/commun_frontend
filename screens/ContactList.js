@@ -34,6 +34,7 @@ const ContactList = ({navigation}) => {
     );
   };
   useEffect(() => {
+    console.log("asd")
     getContacts();
     getUsers();
     // getInvited();
