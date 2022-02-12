@@ -31,11 +31,10 @@ const ChatScreen = ({navigation, route}) => {
   var temp = 0;
   var ws = React.useRef(new WebSocket('ws://' + SOCKET_A)).current;
   useEffect(() => {
-    console.log('ws',ws);
     // if (userId == user.lastMessage.sender.id) {
       console.log('receiverIds', receiverId)
       ws.onopen = () => {
-        console.log('Server Stat ', 'Connected to the server');
+        console.log('Server Stat  sdfsdsd ', 'Connected to the server');
         setServerState('Connected to the server');
         const userOpen = {
           // action: 'open',
@@ -102,24 +101,24 @@ const ChatScreen = ({navigation, route}) => {
           Platform.OS + ' ' + userId,
         );
         console.log(JSON.parse(e.data).Data.data);
-        if (
-          userId == JSON.parse(e.data).Data.data.senderId &&
-          receiverId == JSON.parse(e.data).Data.data.receiverId
-        ) {
-          const message = {
-            _id: Math.round(new Date().getTime() +2 / 1000),
-            text: JSON.parse(e.data).Data.data.caption,
-            createdAt: new Date(),
-            user: {
-              _id: receiverId,
-              name: user.lastMessage.receiver.phoneNumber,
-              avatar: 'https://placeimg.com/140/140/any',
-            },
-          };
-          setMessages(previousMessages =>
-            GiftedChat.append(previousMessages, message),
-          );
-        }
+        // if (
+        //   userId == JSON.parse(e.data).Data.data.senderId &&
+        //   receiverId == JSON.parse(e.data).Data.data.receiverId
+        // ) {
+        //   const message = {
+        //     _id: Math.round(new Date().getTime() +2 / 1000),
+        //     text: JSON.parse(e.data).Data.data.caption,
+        //     createdAt: new Date(),
+        //     user: {
+        //       _id: receiverId,
+        //       name: user.lastMessage.receiver.phoneNumber,
+        //       avatar: 'https://placeimg.com/140/140/any',
+        //     },
+        //   };
+        //   setMessages(previousMessages =>
+        //     GiftedChat.append(previousMessages, message),
+        //   );
+        // }
       }
     };
 
@@ -129,6 +128,9 @@ const ChatScreen = ({navigation, route}) => {
   const getChat = async () => {
     const token = await AsyncStorage.getItem('TOKEN');
     setLoading(true);
+    console.log('userId',userId)
+    console.log(user.lastMessage.sender.id)
+
     if (userId == user.lastMessage.sender.id) {
       await fetch(A_URL + '/api/chat/' + user.lastMessage.receiver.id, {
         method: 'GET',
@@ -149,9 +151,9 @@ const ChatScreen = ({navigation, route}) => {
                 text: json.data[i].caption,
                 createdAt: json.data[i].createdAt,
                 user: {
-                  _id: json.data[i].receiver.id,
-                  name: json.data[i].receiver.phoneNumber,
-                  avatar: 'https://placeimg.com/140/140/any',
+                  _id: json.data[i].sender.id == userId?1:2,
+                  // name: json.data[i].receiver.phoneNumber,
+                  // avatar: 'https://placeimg.com/140/140/any',
                 },
               };
               setMessages(previousMessages =>
@@ -180,14 +182,15 @@ const ChatScreen = ({navigation, route}) => {
           if (json.code == 200) {
             setChatData(json.data);
             for (var i = 0; i < json.data.length; i++) {
+              console.log(json.data[i].sender.id ,userId);
               const message = {
-                _id: Math.round(new Date().getMilliseconds() / 1000),
+                _id:i ,
                 text: json.data[i].caption,
                 createdAt: json.data[i].createdAt,
                 user: {
-                  _id: json.data[i].senderId,
-                  name: json.data[i].sender.phoneNumber,
-                  avatar: 'https://placeimg.com/140/140/any',
+                  _id: json.data[i].sender.id == userId? 1: 2,
+                  // name: json.data[i].receiver.phoneNumber,
+                  // avatar: 'https://placeimg.com/140/140/any',
                 },
               };
 
@@ -234,9 +237,20 @@ const ChatScreen = ({navigation, route}) => {
     //   };
     //   ws.send(JSON.stringify(message));
     // }
-    // setMessages(previousMessages =>
-    //   GiftedChat.append(previousMessages, messages),
-    // );
+    console.log('klfff')
+      const message1 = {
+        _id: Math.round(new Date().getTime() +2 / 1000),
+        text: messages[0].text,
+        createdAt: new Date(),
+        user: {
+          _id: 1,
+          // name:  user.lastMessage.receiver.phoneNumber,
+          // avatar: 'https://placeimg.com/140/140/any',
+        },
+      };
+    setMessages(previousMessages =>
+      GiftedChat.append(previousMessages, message1),
+    );
   }, []);
   // const sendMessage = async message => {
   //   const token = await AsyncStorage.getItem('TOKEN');
@@ -454,7 +468,7 @@ const ChatScreen = ({navigation, route}) => {
             showUserAvatar={false}
             onSend={messages => onSend(messages)}
             user={{
-              _id: receiverId,
+              _id: 1,
             }}
             renderBubble={renderBubble}
             isTyping={true}

@@ -7,7 +7,7 @@ import {
 import PagerView from 'react-native-pager-view';
 import OnboardDesign from '../components/onboardDesign';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {URL} from '@env';
+import {A_URL} from '@env';
 
 const onboardingScreen = ({navigation}) => {
   const pagerRef = useRef(null);
@@ -19,7 +19,7 @@ const onboardingScreen = ({navigation}) => {
       const value = await AsyncStorage.getItem('veryfied');
       const token = await AsyncStorage.getItem('TOKEN');
       if (value !== null) {
-        await fetch(URL + '/api/auth/me', {
+        await fetch(A_URL + '/api/auth/me', {
           method: 'GET',
           headers: {
             Accept: 'application/json',
