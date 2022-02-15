@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -14,11 +14,28 @@ const onboardingScreen = ({navigation}) => {
   const handlePageChange = pageNumber => {
     pagerRef.current.setPage(pageNumber);
   };
+  let value = ""
+  let token = ""
+
+  const tokenCheck = ()=>{
+    try {
+      value =  AsyncStorage.getItem('veryfied');
+      token = AsyncStorage.getItem('TOKEN');
+      if (value === null ||  token !== null) {
+        navigation.navigate('login');
+      }
+    }catch (e) {
+      console.log(e)
+    }
+  }
+
   const getData = async () => {
     try {
-      const value = await AsyncStorage.getItem('veryfied');
-      const token = await AsyncStorage.getItem('TOKEN');
-      if (value !== null) {
+      console.log(URL)
+      await tokenCheck()
+      value = await AsyncStorage.getItem('veryfied');
+      token = await AsyncStorage.getItem('TOKEN');
+      if (value !== null &&  token !== null) {
         await fetch(URL + '/api/auth/me', {
           method: 'GET',
           headers: {

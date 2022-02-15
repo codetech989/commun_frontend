@@ -9,7 +9,7 @@ import PhoneInput from 'react-native-phone-number-input';
 import Navigation from '../navigation/navigation';
 import Toast from 'react-native-simple-toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {A_URL} from '@env';
+import {URL} from '@env';
 
 const MobileLogin = ({navigation}) => {
   const [phone, setPhone] = useState('');
@@ -18,8 +18,8 @@ const MobileLogin = ({navigation}) => {
   const phoneInput = useRef < PhoneInput > null;
 
   const sendOtp = async () => {
-    console.log(A_URL)
-    await fetch(A_URL + '/api/auth/send-otp', {
+    console.log(URL)
+    await fetch(URL + '/api/auth/send-otp', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -77,6 +77,14 @@ const MobileLogin = ({navigation}) => {
             console.log('PHONE ', phone + ',' + code);
           }}>
           <Text style={styles.btnText}>Next</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+            style={styles.numBtn}
+            onPress={async() => {
+              let token = await AsyncStorage.getItem('TOKEN');
+              console.log('token ', token);
+            }}>
+          <Text style={styles.btnText}>test</Text>
         </TouchableOpacity>
       </View>
     </View>

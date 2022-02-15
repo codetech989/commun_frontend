@@ -19,7 +19,7 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
-import {A_URL} from '@env';
+import {URL} from '@env';
 const USERS = [
   {
     id: 1,
@@ -189,7 +189,7 @@ const ChatListScreen = ({navigation}) => {
 
     const token = await AsyncStorage.getItem('TOKEN');
 
-    await fetch(A_URL + '/api/chat/all?page=1&limit=50', {
+    await fetch(URL + '/api/chat/all?page=1&limit=50', {
       method: 'GET',
       headers: {
         Accept: 'application/json',

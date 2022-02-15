@@ -13,7 +13,7 @@ import {
 import Toast from 'react-native-simple-toast';
 import Contacts from 'react-native-contacts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {A_URL} from '@env';
+import {URL} from '@env';
 const ContactList = ({navigation}) => {
   const [myContacts, setMyContacts] = useState([]);
   const [communeUsers, setCommuneUsers] = useState([]);
@@ -124,7 +124,7 @@ const ContactList = ({navigation}) => {
 
   const getUsers = async () => {
     const token = await AsyncStorage.getItem('TOKEN');
-    await fetch(A_URL + '/api/client/all', {
+    await fetch(URL + '/api/client/all', {
       method: 'GET',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -149,7 +149,7 @@ const ContactList = ({navigation}) => {
   const sendInvite = async phoneNumber => {
     console.log(phoneNumber);
     const token = await AsyncStorage.getItem('TOKEN');
-    await fetch(A_URL + '/api/auth/invite-contact', {
+    await fetch(URL + '/api/auth/invite-contact', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,

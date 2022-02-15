@@ -40,15 +40,15 @@ const CameraPopup = props => {
               onPress={() => {
                 launchImageLibrary({mediaType: 'photo'}, response => {
                   // console.log('Selected Gallery Image', response);
-                  selectedImage(response.uri);
+                  selectedImage(response);
                 });
               }}>
               <Text style={styles.text}>Open Gallery</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => {
-                // console.log('Selected Gallery Image', response);
-                selectedImage('');
+              onPress={(response) => {
+                console.log('Selected  Image', response);
+                selectedImage(null);
               }}>
               <Text style={styles.text}>Cancel</Text>
             </TouchableOpacity>
