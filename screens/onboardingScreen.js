@@ -1,5 +1,5 @@
-import React, {useRef} from 'react';
-import {StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
+import React, {useEffect, useRef} from 'react';
+import {PermissionsAndroid, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -7,19 +7,71 @@ import {
 import PagerView from 'react-native-pager-view';
 import OnboardDesign from '../components/onboardDesign';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {A_URL} from '@env';
+import {URL} from '@env';
+import Contacts from "react-native-contacts";
+
 
 const onboardingScreen = ({navigation}) => {
   const pagerRef = useRef(null);
   const handlePageChange = pageNumber => {
     pagerRef.current.setPage(pageNumber);
   };
+  let value = ""
+  let token = ""
+
+  useEffect(()=>{
+    getContacts()
+  },[])
+  const getContacts = async () => {
+    PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
+      title: 'Contacts',
+      message: 'This app would like to view your contacts.',
+      buttonPositive: 'Allow',
+    })
+        .then(
+            Contacts.checkPermission().then(permission => {
+              // Contacts.PERMISSION_AUTHORIZED || Contacts.PERMISSION_UNDEFINED || Contacts.PERMISSION_DENIED
+              if (permission === 'undefined') {
+                Contacts.requestPermission().then(permission => {
+                  // ...
+                });
+              }
+              if (permission === 'authorized') {
+                Contacts.getAll().then(contacts => {
+                  // contacts returned
+                });
+              }
+              if (permission === 'denied') {
+                // x.x
+                console.log('denied');
+              }
+            }),
+        )
+        .catch(error => {
+          console.log(error);
+        });
+  };
+  const tokenCheck = ()=>{
+    try {
+      value =  AsyncStorage.getItem('veryfied');
+      token = AsyncStorage.getItem('TOKEN');
+      if (value === null ||  token !== null) {
+        navigation.navigate('login');
+      }
+    }catch (e) {
+      console.log(e)
+    }
+  }
+
   const getData = async () => {
     try {
-      const value = await AsyncStorage.getItem('veryfied');
-      const token = await AsyncStorage.getItem('TOKEN');
-      if (value !== null) {
-        await fetch(A_URL + '/api/auth/me', {
+      console.log(URL)
+      await tokenCheck()
+      value = await AsyncStorage.getItem('veryfied');
+      token = await AsyncStorage.getItem('TOKEN');
+      if (value !== null &&  token !== null) {
+        await fetch(URL + '/api/auth/me', {
+
           method: 'GET',
           headers: {
             Accept: 'application/json',

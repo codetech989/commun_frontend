@@ -13,7 +13,7 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {A_URL} from '@env';
+import {URL} from '@env';
 
 const OtpScreen = ({route}) => {
   const {TOKEN} = route.params;
@@ -63,7 +63,7 @@ const OtpScreen = ({route}) => {
   };
 
   const confirmCode = async () => {
-    await fetch(A_URL + '/api/auth/verify-otp', {
+    await fetch(URL + '/api/auth/verify-otp', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

@@ -19,7 +19,7 @@ import {
   GiftedChat,
   InputToolbar,
 } from 'react-native-gifted-chat';
-import {A_URL, SOCKET_A} from '@env';
+import {URL, SOCKET_URL} from '@env';
 const ChatScreen = ({navigation, route}) => {
   const {user, receiverId, userId, userPhone} = route.params;
   const [messages, setMessages] = useState([]);
@@ -29,7 +29,7 @@ const ChatScreen = ({navigation, route}) => {
   const [chatData, setChatData] = useState([]);
   const [serverState, setServerState] = React.useState('Loading...');
   var temp = 0;
-  var ws = React.useRef(new WebSocket('ws://' + SOCKET_A)).current;
+  var ws = React.useRef(new WebSocket('ws://' + SOCKET_URL)).current;
   useEffect(() => {
     // if (userId == user.lastMessage.sender.id) {
       console.log('receiverIds', receiverId)
@@ -132,7 +132,7 @@ const ChatScreen = ({navigation, route}) => {
     console.log(user.lastMessage.sender.id)
 
     if (userId == user.lastMessage.sender.id) {
-      await fetch(A_URL + '/api/chat/' + user.lastMessage.receiver.id, {
+      await fetch(URL + '/api/chat/' + user.lastMessage.receiver.id, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
@@ -169,7 +169,7 @@ const ChatScreen = ({navigation, route}) => {
           setLoading(false);
         });
     } else {
-      await fetch(A_URL + '/api/chat/' + user.lastMessage.sender.id, {
+      await fetch(URL + '/api/chat/' + user.lastMessage.sender.id, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
@@ -254,7 +254,7 @@ const ChatScreen = ({navigation, route}) => {
   }, []);
   // const sendMessage = async message => {
   //   const token = await AsyncStorage.getItem('TOKEN');
-  //   await fetch(A_URL + '/api/chat/message/send', {
+  //   await fetch(URL + '/api/chat/message/send', {
   //     method: 'POST',
   //     headers: {
   //       Accept: 'application/json',
