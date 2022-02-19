@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
   Text,
@@ -15,6 +15,7 @@ import Contacts from 'react-native-contacts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {URL} from '@env';
 const ContactList = ({navigation}) => {
+  const isMountedRef = useRef(null);
   const [myContacts, setMyContacts] = useState([]);
   const [communeUsers, setCommuneUsers] = useState([]);
   const [filteredContacts, setFilteredContacts] = useState([]);
@@ -34,10 +35,10 @@ const ContactList = ({navigation}) => {
     );
   };
   useEffect(() => {
-    console.log("asd")
+    isMountedRef.current = true;
     getContacts();
     getUsers();
-    // getInvited();
+    return () => isMountedRef.current = false;
   }, []);
   useEffect(() => {
     const communeNumbers = [];
@@ -77,9 +78,11 @@ const ContactList = ({navigation}) => {
       merge.push(a);
     }
     var filteredArrayNonP = myContacts.filter(function (n) {
+
       for (var i = 0; i < communeNumbers.length; i++) {
-        let number = n.phoneNumbers[0].number.replace(/\D/g, '');
-        number = number.slice(-10);
+        let number = n.phoneNumbers.length!==0 && n.phoneNumbers[0].number.replace(/\D/g, '');
+
+        number = number.length > 9 &&  number.slice(-10);
         if (number === communeNumbers[i].number) {
           return false;
         }
@@ -103,17 +106,20 @@ const ContactList = ({navigation}) => {
           if (permission === 'undefined') {
             Contacts.requestPermission().then(permission => {
               // ...
+              console.log('undefined')
             });
           }
           if (permission === 'authorized') {
             Contacts.getAll().then(contacts => {
               // contacts returned
+              console.log('authorized');
               setMyContacts(contacts);
             });
           }
           if (permission === 'denied') {
             // x.x
             console.log('denied');
+            navigation.navigate('ChatList')
           }
         }),
       )
@@ -179,29 +185,31 @@ const ContactList = ({navigation}) => {
           alignItems: 'center',
           justifyContent: 'space-around',
         }}>
-        <View>
-          <Text style={{fontSize: 14, color: '#000000', fontWeight: '500'}}>
-            {item.displayName}
-          </Text>
-          <Text style={{fontSize: 14, color: '#000000', fontWeight: '500'}}>
-            {item.phoneNumbers[0].number}
-          </Text>
-        </View>
-        <TouchableOpacity
-          onPress={() => sendInvite(item.phoneNumbers[0].number)}>
-          <View
-            style={{
-              width: 30,
-              height: 30,
-              borderRadius: 15,
-              borderWidth: 1,
-              borderColor: '#128C7E',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text>+</Text>
+        {item.phoneNumbers.length!==0 && <>
+          <View>
+            <Text style={{fontSize: 14, color: '#000000', fontWeight: '500'}}>
+              {item.displayName}
+            </Text>
+            <Text style={{fontSize: 14, color: '#000000', fontWeight: '500'}}>
+              {item.phoneNumbers[0].number}
+            </Text>
           </View>
-        </TouchableOpacity>
+          <TouchableOpacity
+              onPress={() => sendInvite(item.phoneNumbers[0].number)}>
+            <View
+                style={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: 15,
+                  borderWidth: 1,
+                  borderColor: '#128C7E',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+              <Text>+</Text>
+            </View>
+          </TouchableOpacity>
+        </>}
       </View>
     );
   };

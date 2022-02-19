@@ -78,14 +78,6 @@ const MobileLogin = ({navigation}) => {
           }}>
           <Text style={styles.btnText}>Next</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-            style={styles.numBtn}
-            onPress={async() => {
-              let token = await AsyncStorage.getItem('TOKEN');
-              console.log('token ', token);
-            }}>
-          <Text style={styles.btnText}>test</Text>
-        </TouchableOpacity>
       </View>
     </View>
   );

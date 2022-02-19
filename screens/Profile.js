@@ -43,7 +43,7 @@ const Profile = () => {
     const logOut = async (title) => {
         let keys = ['TOKEN', 'IS_ACTIVE'];
         AsyncStorage.multiRemove(keys, (err) => {
-            navigation.navigate(title)
+            navigation.replace('Intro');
             // keys k1 & k2 removed, if they existed
             // do most stuff after removal (if you want)
         });
@@ -78,25 +78,6 @@ const Profile = () => {
     // }, [bio])
 
     const [photo, setPhoto] = React.useState(null);
-
-    const handleChoosePhoto = () => {
-        try {
-            launchImageLibrary({
-                noData: true,
-                mediaType: 'photo',
-                includeBase64: false,
-                maxHeight: 200,
-                maxWidth: 200,
-            }, (response) => {
-                if (response.uri) {
-                    setPhoto( response )
-                }
-            })
-        } catch (error) {
-            console.log(error)
-        }
-
-    };
 
 
     const createFormData = (photo, body = {}) => {
@@ -244,20 +225,6 @@ const Profile = () => {
                             title={'Logout'}
                             image={require('../assets/onboard/logout.png')}
                         />
-                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                            {photo && (
-                                <>
-                                    <Image
-                                        style={styles.user}
-                                        source={{ uri: photo.uri }}
-                                        resizeMode={'cover'}
-                                    />
-                                    <Button title="Upload Photo" onPress={setProfileData} />
-
-                                </>
-                            )}
-                            <Button title="Choose Photo" onPress={handleChoosePhoto} />
-                        </View>
                     </View>
                 </View>
             </ScrollView>

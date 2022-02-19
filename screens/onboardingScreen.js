@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import {StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
+import {PermissionsAndroid, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -8,6 +8,7 @@ import PagerView from 'react-native-pager-view';
 import OnboardDesign from '../components/onboardDesign';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {URL} from '@env';
+import Contacts from "react-native-contacts";
 
 const onboardingScreen = ({navigation}) => {
   const pagerRef = useRef(null);
@@ -17,6 +18,38 @@ const onboardingScreen = ({navigation}) => {
   let value = ""
   let token = ""
 
+  useEffect(()=>{
+    getContacts()
+  },[])
+  const getContacts = async () => {
+    PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
+      title: 'Contacts',
+      message: 'This app would like to view your contacts.',
+      buttonPositive: 'Allow',
+    })
+        .then(
+            Contacts.checkPermission().then(permission => {
+              // Contacts.PERMISSION_AUTHORIZED || Contacts.PERMISSION_UNDEFINED || Contacts.PERMISSION_DENIED
+              if (permission === 'undefined') {
+                Contacts.requestPermission().then(permission => {
+                  // ...
+                });
+              }
+              if (permission === 'authorized') {
+                Contacts.getAll().then(contacts => {
+                  // contacts returned
+                });
+              }
+              if (permission === 'denied') {
+                // x.x
+                console.log('denied');
+              }
+            }),
+        )
+        .catch(error => {
+          console.log(error);
+        });
+  };
   const tokenCheck = ()=>{
     try {
       value =  AsyncStorage.getItem('veryfied');
