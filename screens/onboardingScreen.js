@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {URL} from '@env';
 import Contacts from "react-native-contacts";
 
+
 const onboardingScreen = ({navigation}) => {
   const pagerRef = useRef(null);
   const handlePageChange = pageNumber => {
@@ -70,6 +71,7 @@ const onboardingScreen = ({navigation}) => {
       token = await AsyncStorage.getItem('TOKEN');
       if (value !== null &&  token !== null) {
         await fetch(URL + '/api/auth/me', {
+
           method: 'GET',
           headers: {
             Accept: 'application/json',
